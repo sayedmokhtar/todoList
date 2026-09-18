@@ -47,7 +47,10 @@ export default function ToDoList() {
 
   // event handler
 
-  function changeDisplayedType(e) {
+  function changeDisplayedType(e, newVlue) {
+    console.log(`${e}\n`);
+    console.log(`${newVlue}\n`);
+    console.log(typeof newVlue);
     setDisplayedTodosType(e.target.value);
   }
   function handleAddClick() {
@@ -66,15 +69,16 @@ export default function ToDoList() {
   return (
     <Container className="Container">
       <Card
-        className="w-1/2 text-center"
+        className="w-full text-center md:w-1/2"
         style={{ maxHeight: "80vh", overflow: "scroll" }}
       >
         <CardContent>
           <Typography className=" text-purple-400 py-3 text-lg font-title font-extrabold">
-            مهام البرنس احمد مجدى
+            مهامى
           </Typography>
           <Divider />
           <ToggleButtonGroup
+            exclusive
             value={displayedTodosType}
             className="direction-ltr mt-5 "
             onChange={changeDisplayedType}
@@ -89,7 +93,7 @@ export default function ToDoList() {
             <Grid size={12}>
               <TextField
                 value={titleInput}
-                className="w-90 "
+                className="w-full  md:w-[80%] "
                 id="outlined-basic"
                 label="المهمة"
                 variant="outlined"
@@ -103,7 +107,7 @@ export default function ToDoList() {
             <Grid size={12}>
               <TextField
                 value={detailsInput}
-                className="w-90 "
+                className="w-full  md:w-[80%] "
                 id="outlined-basic"
                 label="تفاصيل المهمة"
                 variant="outlined"

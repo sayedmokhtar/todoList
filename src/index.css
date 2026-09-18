@@ -56,9 +56,17 @@
   .disabled {
     @apply border rounded-lg py-2 px-4 text-white bg-red-500 ml-80 mb-2;
   }
-
   .IcondButton:hover {
     @apply opacity-50 transition duration-100;
+  }
+  .IcondButton {
+    @apply text-sm md:text-lg;
+  }
+  .cardText {
+    @apply text-sm md:text-lg;
+  }
+  .grid {
+    @apply flex flex-col gap-2 lg:flex lg:flex-row;
   }
   .Todo:hover {
     @apply py-2 transition duration-100;

@@ -151,7 +151,6 @@ export default function Todo({ todo }) {
       </Dialog>
       {/* End Edite dialog */}
       <Card
-        className="Todo"
         sx={{
           minWidth: 275,
           background: "#283593",
@@ -163,6 +162,7 @@ export default function Todo({ todo }) {
           <Grid container spacing={2}>
             {/* actions buttons */}
             <Grid
+              className="grid"
               size={4}
               sx={{
                 display: "flex",
@@ -211,10 +211,18 @@ export default function Todo({ todo }) {
             </Grid>
             {/* actions buttons */}
             <Grid size={8}>
-              <Typography variant="h5" sx={{ textAlign: "right", padding: 1 }}>
+              <Typography
+                className="cardText"
+                variant="h5"
+                sx={{ textAlign: "right", padding: 1 }}
+              >
                 {todo.title}
               </Typography>
-              <Typography variant="h6" sx={{ textAlign: "right" }}>
+              <Typography
+                className="cardText"
+                variant="h6"
+                sx={{ textAlign: "right" }}
+              >
                 {todo.details}
               </Typography>
             </Grid>
