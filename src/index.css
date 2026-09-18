@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Myfont";
+  src: url("../public/fonts/Alexandria-ExtraBold.ttf");
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Myfont";
+  src: url("../public/fonts/Alexandria-Regular.ttf");
+  font-weight: bold;
+}
+@font-face {
+  font-family: "Myfont";
+  src: url("../public/fonts/Alexandria-Medium.ttf");
+  font-weight: bold;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(350px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@theme {
+  --font-title: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --color-primary: #3730a3;
+  --color-secondary: #5c6bc0;
+  --animate-fade-in: fade-in 1s ease-in-out;
+}
+
+@layer {
+  .formInput {
+    @apply border-2 border-black rounded-lg py-1 px-2 m-3 w-1/2;
+  }
+  .formLable {
+    @apply text-xs font-medium font-body ml-2;
+  }
+  .formBtn {
+    @apply border rounded-lg py-2 px-4 text-white bg-black cursor-pointer hover:scale-95 ml-80 mb-2;
+  }
+  .modal {
+    @apply absolute flex justify-center items-center opacity-70 bg-black w-full h-full top-0 left-0;
+  }
+  .modal-content {
+    @apply bg-black text-white text-lg font-body font-bold w-[90%];
+  }
+  .disabled {
+    @apply border rounded-lg py-2 px-4 text-white bg-red-500 ml-80 mb-2;
+  }
+
+  .IcondButton:hover {
+    @apply opacity-50 transition duration-100;
+  }
+  .Todo:hover {
+    @apply py-2 transition duration-100;
+  }
+  .App {
+    @apply w-screen flex justify-center items-center h-dvh bg-black;
+  }
+  .Container {
+    @apply w-full max-w-none flex justify-center h-auto animate-fade-in;
+  }
+}
