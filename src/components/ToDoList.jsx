@@ -10,9 +10,8 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 // component import
 import Todo from "./Todo";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { TodosContext } from "../contexts/TodosContext";
-import { useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export default function ToDoList() {
@@ -21,13 +20,17 @@ export default function ToDoList() {
   const [detailsInput, setDetailsInput] = useState("");
   const [displayedTodosType, setDisplayedTodosType] = useState("");
 
-  // conditional rendering
-  const completedTods = todos.filter((t) => {
-    return t.isCompleted;
-  });
-  const notCompleted = todos.filter((t) => {
-    return !t.isCompleted;
-  });
+  const completedTods = useMemo(() => {
+    return todos.filter((t) => {
+      return t.isCompleted;
+    });
+  }, [todos]);
+  const notCompleted = useMemo(() => {
+    return todos.filter((t) => {
+      return !t.isCompleted;
+    });
+  }, [todos]);
+
   let todosToBeRendred;
   if (displayedTodosType == "completed") {
     todosToBeRendred = completedTods;
