@@ -50,10 +50,7 @@ export default function ToDoList() {
 
   // event handler
 
-  function changeDisplayedType(e, newVlue) {
-    console.log(`${e}\n`);
-    console.log(`${newVlue}\n`);
-    console.log(typeof newVlue);
+  function changeDisplayedType(e) {
     setDisplayedTodosType(e.target.value);
   }
   function handleAddClick() {
