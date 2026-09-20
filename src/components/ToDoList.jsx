@@ -17,12 +17,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Todo from "./Todo";
 import { useState, useEffect, useContext, useMemo } from "react";
 import { TodosContext } from "../contexts/TodosContext";
-import { ToastContext } from "../contexts/ToastContext";
+import { useToast } from "../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid";
 
 export default function ToDoList() {
   const { todos, setTodos } = useContext(TodosContext);
-  const showHideToast = useContext(ToastContext);
+  const showHideToast = useToast();
   const [titleInput, setTitleInput] = useState("");
   const [detailsInput, setDetailsInput] = useState("");
   const [showDeleteDialog, setshowDeleteDialog] = useState(false);
