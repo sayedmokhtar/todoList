@@ -8,10 +8,12 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditOutlineOutlined from "@mui/icons-material/ModeEditOutlineOutlined";
 import { TodosContext } from "../contexts/TodosContext";
+import { ToastContext } from "../contexts/ToastContext";
 import { useContext } from "react";
 
 export default function Todo({ todo, showDailog, showUpdate }) {
   const { todos, setTodos } = useContext(TodosContext);
+  const showHideToast = useContext(ToastContext);
   // event handlers =============================================
   function handleCheckClick() {
     const updatedTods = todos.map((t) => {
@@ -25,6 +27,7 @@ export default function Todo({ todo, showDailog, showUpdate }) {
     });
     setTodos(updatedTods);
     localStorage.setItem("todos", JSON.stringify(updatedTods));
+    showHideToast("تم التعديل");
   }
   function handleDeleteClick() {
     showDailog(todo);
@@ -69,7 +72,7 @@ export default function Todo({ todo, showDailog, showUpdate }) {
               </IconButton>
               <IconButton
                 className="IcondButton"
-                aria-lable="delete"
+                aria-label="delete"
                 style={{
                   color: "#1769aa",
                   background: "white",
@@ -84,7 +87,7 @@ export default function Todo({ todo, showDailog, showUpdate }) {
                   handleCheckClick();
                 }}
                 className="IcondButton"
-                aria-lable="delete"
+                aria-label="delete"
                 style={{
                   color: todo.isCompleted ? "white" : "#8bc34a",
                   background: todo.isCompleted ? "#8bc34a" : "white",
