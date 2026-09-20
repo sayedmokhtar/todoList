@@ -15,13 +15,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 // component import
 import Todo from "./Todo";
-import { useState, useEffect, useContext, useMemo } from "react";
-import { TodosContext } from "../contexts/TodosContext";
+import { useState, useEffect, useMemo, useReducer } from "react";
 import { useToast } from "../contexts/ToastContext";
-import { v4 as uuidv4 } from "uuid";
+import todosReducer from "../reducesrs/todosRducers";
 
 export default function ToDoList() {
-  const { todos, setTodos } = useContext(TodosContext);
+  const [todos, dispatch] = useReducer(todosReducer, []);
   const showHideToast = useToast();
   const [titleInput, setTitleInput] = useState("");
   const [detailsInput, setDetailsInput] = useState("");
@@ -50,8 +49,7 @@ export default function ToDoList() {
     todosToBeRendred = todos;
   }
   useEffect(() => {
-    const storageTodo = JSON.parse(localStorage.getItem("todos")) ?? [];
-    setTodos(storageTodo);
+    dispatch({ type: "get" });
   }, []);
 
   // event handler
@@ -60,15 +58,10 @@ export default function ToDoList() {
     setDisplayedTodosType(e.target.value);
   }
   function handleAddClick() {
-    const newTodo = {
-      id: uuidv4(),
-      title: titleInput,
-      details: detailsInput,
-      isCompleted: false,
-    };
-    const updatedTodos = [...todos, newTodo];
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({
+      type: "added",
+      payLoad: { title: titleInput, details: detailsInput },
+    });
     setTitleInput("");
     setDetailsInput("");
     showHideToast("تمت الاضافة بنجاح");
@@ -82,14 +75,14 @@ export default function ToDoList() {
     setshowDeleteDialog(false);
   }
   function handleDeleteConfirmation() {
-    const updatedTodo = todos.filter((t) => {
-      return t.id != dialogTodo.id;
+    dispatch({
+      type: "deleted",
+      payLoad: dialogTodo,
     });
-    setTodos(updatedTodo);
-    localStorage.setItem("todos", JSON.stringify(updatedTodo));
     setshowDeleteDialog(false);
     showHideToast("تمت الحذف بنجاح");
   }
+
   function openUpdateDialog(todo) {
     setDialogTodo(todo);
     setShowUpdateDialog(true);
@@ -99,16 +92,8 @@ export default function ToDoList() {
     setShowUpdateDialog(false);
   }
   function handleUpdateConfirmation() {
-    const newUpdatedTodo = todos.map((t) => {
-      if (t.id == dialogTodo.id) {
-        return { ...t, title: dialogTodo.title, details: dialogTodo.details };
-      } else {
-        return t;
-      }
-    });
-    setTodos(newUpdatedTodo);
+    dispatch({ type: "updated", payLoad: dialogTodo });
     setShowUpdateDialog(false);
-    localStorage.setItem("todos", JSON.stringify(newUpdatedTodo));
     showHideToast("تم التعديل بنجاح");
   }
 

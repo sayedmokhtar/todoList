@@ -29,6 +29,7 @@ export default function Todo({ todo, showDailog, showUpdate }) {
     localStorage.setItem("todos", JSON.stringify(updatedTods));
     showHideToast("تم التعديل");
   }
+
   function handleDeleteClick() {
     showDailog(todo);
   }
