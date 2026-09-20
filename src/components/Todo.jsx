@@ -6,24 +6,11 @@ import Grid from "@mui/material/Grid";
 import CheckIcon from "@mui/icons-material/Check";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import ModeEditOutlineOutlined from "@mui/icons-material/ModeEditOutlineOutlined";
-import TextField from "@mui/material/TextField";
 import { TodosContext } from "../contexts/TodosContext";
-import { useContext, useState } from "react";
-import Button from "@mui/material/Button";
+import { useContext } from "react";
 
-export default function Todo({ todo }) {
-  const [showDeleteDialog, setshowDeleteDialog] = useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-  const [todosUpdate, settodosUpdate] = useState({
-    title: todo.title,
-    details: todo.details,
-  });
+export default function Todo({ todo, showDailog, showUpdate }) {
   const { todos, setTodos } = useContext(TodosContext);
   // event handlers =============================================
   function handleCheckClick() {
@@ -40,116 +27,14 @@ export default function Todo({ todo }) {
     localStorage.setItem("todos", JSON.stringify(updatedTods));
   }
   function handleDeleteClick() {
-    setshowDeleteDialog(true);
-  }
-  function handleCloseDialogClick() {
-    setshowDeleteDialog(false);
-  }
-  function handleDeleteConfirmation() {
-    const updatedTodo = todos.filter((t) => {
-      return t.id != todo.id;
-    });
-    setTodos(updatedTodo);
-    localStorage.setItem("todos", JSON.stringify(updatedTodo));
-  }
-  function hanldeUpdateClose() {
-    setShowUpdateDialog(true);
-  }
-  function handleUpdateConfirmation() {
-    const newUpdatedTodo = todos.map((t) => {
-      if (t.id == todo.id) {
-        return { ...t, title: todosUpdate.title, details: todosUpdate.details };
-      } else {
-        return t;
-      }
-    });
-    setTodos(newUpdatedTodo);
-    setShowUpdateDialog(false);
-    localStorage.setItem("todos", JSON.stringify(newUpdatedTodo));
+    showDailog(todo);
   }
   function hanldeUpdateClick() {
-    setShowUpdateDialog(false);
+    showUpdate(todo);
   }
-
   // event handlers========================================================
   return (
     <>
-      {/* delete dialog */}
-      <Dialog
-        style={{ direction: "rtl" }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        open={showDeleteDialog}
-        onClose={handleCloseDialogClick}
-      >
-        <DialogTitle id="alert-dialog-title">
-          هل انت متاكد من رغبتك فى الحذف ؟
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            لا يتم التراجع بعد الحذف الان
-          </DialogContentText>
-          <DialogActions>
-            <Button onClick={handleCloseDialogClick}>اغلاق</Button>
-            <Button onClick={handleDeleteConfirmation}>حذف</Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
-      {/*End delete dialog */}
-
-      {/* Edite dialog */}
-      <Dialog
-        style={{ direction: "rtl" }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        open={showUpdateDialog}
-        onClose={hanldeUpdateClick}
-      >
-        <DialogTitle id="alert-dialog-title">
-          هل انت متاكد من رغبتك فى الحذف ؟
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            value={todosUpdate.title}
-            margin="dense"
-            id="title"
-            label="المهمة"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={(e) => {
-              settodosUpdate({ ...todosUpdate, title: e.target.value });
-            }}
-          ></TextField>
-          <TextField
-            autoFocus
-            value={todosUpdate.details}
-            margin="dense"
-            id="description"
-            label="تفاصيل المهمة"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={(e) => {
-              settodosUpdate({ ...todosUpdate, details: e.target.value });
-            }}
-          ></TextField>
-
-          <DialogActions>
-            <Button style={{ direction: "rtl" }} onClick={hanldeUpdateClick}>
-              اغلاق
-            </Button>
-            <Button
-              style={{ direction: "rtl" }}
-              onClick={handleUpdateConfirmation}
-            >
-              تعديل
-            </Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
-      {/* End Edite dialog */}
       <Card
         sx={{
           minWidth: 275,
@@ -190,7 +75,7 @@ export default function Todo({ todo }) {
                   background: "white",
                   border: "#1769aa solid 3px",
                 }}
-                onClick={hanldeUpdateClose}
+                onClick={hanldeUpdateClick}
               >
                 <ModeEditOutlineOutlined />
               </IconButton>

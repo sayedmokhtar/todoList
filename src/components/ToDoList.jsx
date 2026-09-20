@@ -8,6 +8,11 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 // component import
 import Todo from "./Todo";
 import { useState, useEffect, useContext, useMemo } from "react";
@@ -18,7 +23,10 @@ export default function ToDoList() {
   const { todos, setTodos } = useContext(TodosContext);
   const [titleInput, setTitleInput] = useState("");
   const [detailsInput, setDetailsInput] = useState("");
+  const [showDeleteDialog, setshowDeleteDialog] = useState(false);
   const [displayedTodosType, setDisplayedTodosType] = useState("");
+  const [dialogTodo, setDialogTodo] = useState({ title: "", details: "" });
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
   const completedTods = useMemo(() => {
     return todos.filter((t) => {
@@ -39,10 +47,6 @@ export default function ToDoList() {
   } else {
     todosToBeRendred = todos;
   }
-
-  const todojsx = todosToBeRendred.map((t) => {
-    return <Todo key={t.id} todo={t} />;
-  });
   useEffect(() => {
     const storageTodo = JSON.parse(localStorage.getItem("todos")) ?? [];
     setTodos(storageTodo);
@@ -66,70 +70,195 @@ export default function ToDoList() {
     setTitleInput("");
     setDetailsInput("");
   }
+  // event handler
+  function openDeleteDialog(todo) {
+    setDialogTodo(todo);
+    setshowDeleteDialog(true);
+  }
+  function handleCloseDialogClick() {
+    setshowDeleteDialog(false);
+  }
+  function handleDeleteConfirmation() {
+    const updatedTodo = todos.filter((t) => {
+      return t.id != dialogTodo.id;
+    });
+    setTodos(updatedTodo);
+    localStorage.setItem("todos", JSON.stringify(updatedTodo));
+    setshowDeleteDialog(false);
+  }
+  function openUpdateDialog(todo) {
+    setDialogTodo(todo);
+    setShowUpdateDialog(true);
+  }
+
+  function hanldeUpdateClose() {
+    setShowUpdateDialog(false);
+  }
+  function handleUpdateConfirmation() {
+    const newUpdatedTodo = todos.map((t) => {
+      if (t.id == dialogTodo.id) {
+        return { ...t, title: dialogTodo.title, details: dialogTodo.details };
+      } else {
+        return t;
+      }
+    });
+    setTodos(newUpdatedTodo);
+    setShowUpdateDialog(false);
+    localStorage.setItem("todos", JSON.stringify(newUpdatedTodo));
+  }
+
+  const todojsx = todosToBeRendred.map((t) => {
+    return (
+      <Todo
+        key={t.id}
+        todo={t}
+        showDailog={openDeleteDialog}
+        showUpdate={openUpdateDialog}
+      />
+    );
+  });
   return (
-    <Container className="Container">
-      <Card
-        className="w-full text-center md:w-1/2"
-        style={{ maxHeight: "80vh", overflow: "scroll" }}
+    <>
+      {/* delete dialog */}
+      <Dialog
+        style={{ direction: "rtl" }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        open={showDeleteDialog}
+        onClose={handleCloseDialogClick}
       >
-        <CardContent>
-          <Typography className=" text-purple-400 py-3 text-lg font-title font-extrabold">
-            مهامى
-          </Typography>
-          <Divider />
-          <ToggleButtonGroup
-            exclusive
-            value={displayedTodosType}
-            className="direction-ltr mt-5 "
-            onChange={changeDisplayedType}
-          >
-            <ToggleButton value="non-completed">غير المنجز</ToggleButton>
-            <ToggleButton value="completed">المنجز</ToggleButton>
-            <ToggleButton value="all">الكل</ToggleButton>
-          </ToggleButtonGroup>
-          {todojsx}
-          {/* input + add totd */}
-          <Grid container spacing={1} className="mt-2 ">
-            <Grid size={12}>
-              <TextField
-                value={titleInput}
-                className="w-full  md:w-[80%] "
-                id="outlined-basic"
-                label="المهمة"
-                variant="outlined"
-                onChange={(e) => {
-                  setTitleInput(e.target.value);
-                }}
-              ></TextField>
+        <DialogTitle id="alert-dialog-title">
+          هل انت متاكد من رغبتك فى الحذف ؟
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            لا يتم التراجع بعد الحذف الان
+          </DialogContentText>
+          <DialogActions>
+            <Button onClick={handleCloseDialogClick}>اغلاق</Button>
+            <Button onClick={handleDeleteConfirmation}>حذف</Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+      {/*End delete dialog */}
+      {/* Edite dialog */}
+      <Dialog
+        style={{ direction: "rtl" }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        open={showUpdateDialog}
+        onClose={hanldeUpdateClose}
+      >
+        <DialogTitle id="alert-dialog-title">
+          هل انت متاكد من رغبتك فى الحذف ؟
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            value={dialogTodo.title}
+            margin="dense"
+            id="title"
+            label="المهمة"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => {
+              setDialogTodo({ ...dialogTodo, title: e.target.value });
+            }}
+          ></TextField>
+          <TextField
+            autoFocus
+            value={dialogTodo.details}
+            margin="dense"
+            id="description"
+            label="تفاصيل المهمة"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => {
+              setDialogTodo({ ...dialogTodo, details: e.target.value });
+            }}
+          ></TextField>
+
+          <DialogActions>
+            <Button style={{ direction: "rtl" }} onClick={hanldeUpdateClose}>
+              اغلاق
+            </Button>
+            <Button
+              style={{ direction: "rtl" }}
+              onClick={handleUpdateConfirmation}
+            >
+              تعديل
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+      {/* End Edite dialog */}
+
+      <Container className="Container">
+        <Card
+          className="w-full text-center md:w-1/2"
+          style={{ maxHeight: "80vh", overflow: "scroll" }}
+        >
+          <CardContent>
+            <Typography className=" text-purple-400 py-3 text-lg font-title font-extrabold">
+              مهامى
+            </Typography>
+            <Divider />
+            <ToggleButtonGroup
+              exclusive
+              value={displayedTodosType}
+              className="direction-ltr mt-5 "
+              onChange={changeDisplayedType}
+            >
+              <ToggleButton value="non-completed">غير المنجز</ToggleButton>
+              <ToggleButton value="completed">المنجز</ToggleButton>
+              <ToggleButton value="all">الكل</ToggleButton>
+            </ToggleButtonGroup>
+            {todojsx}
+            {/* input + add totd */}
+            <Grid container spacing={1} className="mt-2 ">
+              <Grid size={12}>
+                <TextField
+                  value={titleInput}
+                  className="w-full  md:w-[80%] "
+                  id="outlined-basic"
+                  label="المهمة"
+                  variant="outlined"
+                  onChange={(e) => {
+                    setTitleInput(e.target.value);
+                  }}
+                ></TextField>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container spacing={1} className="mt-2 ">
-            <Grid size={12}>
-              <TextField
-                value={detailsInput}
-                className="w-full  md:w-[80%] "
-                id="outlined-basic"
-                label="تفاصيل المهمة"
-                variant="outlined"
-                onChange={(e) => {
-                  setDetailsInput(e.target.value);
-                }}
-              ></TextField>
+            <Grid container spacing={1} className="mt-2 ">
+              <Grid size={12}>
+                <TextField
+                  value={detailsInput}
+                  className="w-full  md:w-[80%] "
+                  id="outlined-basic"
+                  label="تفاصيل المهمة"
+                  variant="outlined"
+                  onChange={(e) => {
+                    setDetailsInput(e.target.value);
+                  }}
+                ></TextField>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container spacing={1} className="mt-2 ">
-            <Grid size={12}>
-              <Button
-                variant="contained"
-                onClick={handleAddClick}
-                disabled={titleInput.length == 0 || detailsInput.length == 0}
-              >
-                اضافة مهمة
-              </Button>
+            <Grid container spacing={1} className="mt-2 ">
+              <Grid size={12}>
+                <Button
+                  variant="contained"
+                  onClick={handleAddClick}
+                  disabled={titleInput.length == 0 || detailsInput.length == 0}
+                >
+                  اضافة مهمة
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-    </Container>
+          </CardContent>
+        </Card>
+      </Container>
+    </>
   );
 }
