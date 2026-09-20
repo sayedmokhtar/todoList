@@ -1,4 +1,6 @@
 import ToDoList from "./components/ToDoList";
+import SnackBar from "./components/SnackBar";
+import { ToastContext } from "./contexts/ToastContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 const theme = createTheme({
   typography: {
@@ -30,13 +32,26 @@ const initial = [
 ];
 function App() {
   const [todos, setTodos] = useState(initial);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+
+  function showHideToast(msg) {
+    setOpen(true);
+    setMessage(msg);
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000);
+  }
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <TodosContext.Provider value={{ todos, setTodos }}>
-          <ToDoList />
-        </TodosContext.Provider>
-      </div>
+      <ToastContext.Provider value={showHideToast}>
+        <div className="App">
+          <SnackBar open={open} message={message} />
+          <TodosContext.Provider value={{ todos, setTodos }}>
+            <ToDoList />
+          </TodosContext.Provider>
+        </div>
+      </ToastContext.Provider>
     </ThemeProvider>
   );
 }
