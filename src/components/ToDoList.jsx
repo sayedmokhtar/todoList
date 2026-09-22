@@ -14,13 +14,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 // component import
+
 import Todo from "./Todo";
-import { useState, useEffect, useMemo, useReducer } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useToast } from "../contexts/ToastContext";
-import todosReducer from "../reducesrs/todosRducers";
+import { useTodos } from "../contexts/TodosContext";
 
 export default function ToDoList() {
-  const [todos, dispatch] = useReducer(todosReducer, []);
+  const { todos, history, dispatch } = useTodos();
   const showHideToast = useToast();
   const [titleInput, setTitleInput] = useState("");
   const [detailsInput, setDetailsInput] = useState("");
@@ -28,7 +29,6 @@ export default function ToDoList() {
   const [displayedTodosType, setDisplayedTodosType] = useState("");
   const [dialogTodo, setDialogTodo] = useState({ title: "", details: "" });
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-
   const completedTods = useMemo(() => {
     return todos.filter((t) => {
       return t.isCompleted;
@@ -45,17 +45,22 @@ export default function ToDoList() {
     todosToBeRendred = completedTods;
   } else if (displayedTodosType == "non-completed") {
     todosToBeRendred = notCompleted;
+  } else if (displayedTodosType == "History") {
+    todosToBeRendred = history;
   } else {
     todosToBeRendred = todos;
   }
   useEffect(() => {
+    console.log("get eefect gun");
     dispatch({ type: "get" });
-  }, []);
+  }, [dispatch]);
 
   // event handler
 
-  function changeDisplayedType(e) {
-    setDisplayedTodosType(e.target.value);
+  function changeDisplayedType(e, newValue) {
+    if (newValue !== null) {
+      setDisplayedTodosType(newValue);
+    }
   }
   function handleAddClick() {
     dispatch({
@@ -71,6 +76,7 @@ export default function ToDoList() {
     setDialogTodo(todo);
     setshowDeleteDialog(true);
   }
+
   function handleCloseDialogClick() {
     setshowDeleteDialog(false);
   }
@@ -96,6 +102,9 @@ export default function ToDoList() {
     setShowUpdateDialog(false);
     showHideToast("تم التعديل بنجاح");
   }
+  function handleClearHistory() {
+    dispatch({ type: "clear" });
+  }
 
   const todojsx = todosToBeRendred.map((t) => {
     return (
@@ -104,6 +113,7 @@ export default function ToDoList() {
         todo={t}
         showDailog={openDeleteDialog}
         showUpdate={openUpdateDialog}
+        isHistory={displayedTodosType == "History"}
       />
     );
   });
@@ -140,7 +150,7 @@ export default function ToDoList() {
         onClose={hanldeUpdateClose}
       >
         <DialogTitle id="alert-dialog-title">
-          هل انت متاكد من رغبتك فى الحذف ؟
+          هل انت متاكد من رغبتك فى التعديل ؟
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -192,7 +202,7 @@ export default function ToDoList() {
         >
           <CardContent>
             <Typography className=" text-purple-400 py-3 text-lg font-title font-extrabold">
-              مهامى
+              Your Tasks
             </Typography>
             <Divider />
             <ToggleButtonGroup
@@ -201,9 +211,15 @@ export default function ToDoList() {
               className="direction-ltr mt-5 "
               onChange={changeDisplayedType}
             >
-              <ToggleButton value="non-completed">غير المنجز</ToggleButton>
-              <ToggleButton value="completed">المنجز</ToggleButton>
-              <ToggleButton value="all">الكل</ToggleButton>
+              <ToggleButton value="non-completed">not Achieved</ToggleButton>
+              <ToggleButton value="completed">Achieved</ToggleButton>
+              <ToggleButton value="all">All</ToggleButton>
+              <ToggleButton value="History">History</ToggleButton>
+              {displayedTodosType == "History" && history.length > 0 && (
+                <ToggleButton value="clear" onClick={handleClearHistory}>
+                  clear
+                </ToggleButton>
+              )}
             </ToggleButtonGroup>
             {todojsx}
             {/* input + add totd */}
@@ -213,7 +229,7 @@ export default function ToDoList() {
                   value={titleInput}
                   className="w-full  md:w-[80%] "
                   id="outlined-basic"
-                  label="المهمة"
+                  label="Task"
                   variant="outlined"
                   onChange={(e) => {
                     setTitleInput(e.target.value);
@@ -227,7 +243,7 @@ export default function ToDoList() {
                   value={detailsInput}
                   className="w-full  md:w-[80%] "
                   id="outlined-basic"
-                  label="تفاصيل المهمة"
+                  label=" Details"
                   variant="outlined"
                   onChange={(e) => {
                     setDetailsInput(e.target.value);
@@ -242,7 +258,7 @@ export default function ToDoList() {
                   onClick={handleAddClick}
                   disabled={titleInput.length == 0 || detailsInput.length == 0}
                 >
-                  اضافة مهمة
+                  Add Task
                 </Button>
               </Grid>
             </Grid>

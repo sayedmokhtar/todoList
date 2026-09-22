@@ -60,10 +60,10 @@
     @apply opacity-50 transition duration-100;
   }
   .IcondButton {
-    @apply text-sm md:text-lg;
+    @apply text-xs md:text-lg;
   }
   .cardText {
-    @apply text-sm md:text-lg;
+    @apply text-[6px] md:text-lg;
   }
   .grid {
     @apply flex flex-col gap-2 lg:flex lg:flex-row;
