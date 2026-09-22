@@ -195,9 +195,9 @@ export default function ToDoList() {
       </Dialog>
       {/* End Edite dialog */}
 
-      <Container className="w-full">
+      <Container className="Container">
         <Card
-          className="w-full text-center  md:w-[80%] md:ml-25 md:h-auto md:p-2"
+          className="w-full text-center  md:w-[80%]  md:h-auto md:p-2"
           style={{ maxHeight: "80vh", overflow: "scroll" }}
         >
           <CardContent>
