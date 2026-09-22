@@ -118,7 +118,7 @@ export default function ToDoList() {
     );
   });
   return (
-    <>
+    <div className="w-full">
       {/* delete dialog */}
       <Dialog
         style={{ direction: "rtl" }}
@@ -195,9 +195,9 @@ export default function ToDoList() {
       </Dialog>
       {/* End Edite dialog */}
 
-      <Container className="Container">
+      <Container className="w-full">
         <Card
-          className="w-full text-center md:w-1/2"
+          className="w-full text-center  md:w-[80%] md:ml-25 md:h-auto md:p-2"
           style={{ maxHeight: "80vh", overflow: "scroll" }}
         >
           <CardContent>
@@ -208,15 +208,30 @@ export default function ToDoList() {
             <ToggleButtonGroup
               exclusive
               value={displayedTodosType}
-              className="direction-ltr mt-5 "
+              className="direction-ltr mt-4 gap-2 "
               onChange={changeDisplayedType}
             >
-              <ToggleButton value="non-completed">not Achieved</ToggleButton>
-              <ToggleButton value="completed">Achieved</ToggleButton>
-              <ToggleButton value="all">All</ToggleButton>
-              <ToggleButton value="History">History</ToggleButton>
+              <ToggleButton
+                sx={{ fontSize: "10px", padding: "2px" }}
+                value="non-completed"
+              >
+                un checked
+              </ToggleButton>
+              <ToggleButton sx={{ fontSize: "10px" }} value="completed">
+                checked
+              </ToggleButton>
+              <ToggleButton sx={{ fontSize: "10px" }} value="all">
+                All
+              </ToggleButton>
+              <ToggleButton sx={{ fontSize: "10px" }} value="History">
+                History
+              </ToggleButton>
               {displayedTodosType == "History" && history.length > 0 && (
-                <ToggleButton value="clear" onClick={handleClearHistory}>
+                <ToggleButton
+                  sx={{ fontSize: "10px" }}
+                  value="clear"
+                  onClick={handleClearHistory}
+                >
                   clear
                 </ToggleButton>
               )}
@@ -265,6 +280,6 @@ export default function ToDoList() {
           </CardContent>
         </Card>
       </Container>
-    </>
+    </div>
   );
 }
