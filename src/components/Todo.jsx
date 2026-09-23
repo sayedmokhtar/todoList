@@ -50,7 +50,6 @@ export default function Todo({ todo, showDailog, showUpdate, isHistory }) {
               {!isHistory && (
                 <>
                   <IconButton
-                    className="IcondButton"
                     aria-label="delete"
                     style={{
                       color: "#b23c17",
@@ -62,7 +61,6 @@ export default function Todo({ todo, showDailog, showUpdate, isHistory }) {
                     <DeleteIcon />
                   </IconButton>
                   <IconButton
-                    className="IcondButton"
                     aria-label="delete"
                     style={{
                       color: "#1769aa",
@@ -77,7 +75,6 @@ export default function Todo({ todo, showDailog, showUpdate, isHistory }) {
                     onClick={() => {
                       handleCheckClick();
                     }}
-                    className="IcondButton"
                     aria-label="delete"
                     style={{
                       color: todo.isCompleted ? "white" : "#8bc34a",
@@ -95,14 +92,14 @@ export default function Todo({ todo, showDailog, showUpdate, isHistory }) {
               <Typography
                 className="cardText"
                 variant="h5"
-                sx={{ textAlign: "right", padding: 1 }}
+                sx={{ textAlign: "right", padding: 1, fontSize: "14px" }}
               >
                 {todo.title}
               </Typography>
               <Typography
                 className="cardText"
                 variant="h6"
-                sx={{ textAlign: "right" }}
+                sx={{ textAlign: "right", fontSize: "12px" }}
               >
                 {todo.details}
               </Typography>

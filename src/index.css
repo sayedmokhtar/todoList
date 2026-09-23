@@ -56,12 +56,6 @@
   .disabled {
     @apply border rounded-lg py-2 px-4 text-white bg-red-500 ml-80 mb-2;
   }
-  .IcondButton:hover {
-    @apply opacity-50 transition duration-100;
-  }
-  .IcondButton {
-    @apply text-xs md:text-lg;
-  }
   .cardText {
     @apply text-[6px] md:text-lg;
   }
